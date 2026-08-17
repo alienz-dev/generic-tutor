@@ -247,7 +247,6 @@ function revealExtraSections(file: ConceptFile): void {
  */
 async function presentExplore(
   rl: ReturnType<typeof createInterface>,
-  title: string,
   file: ConceptFile | null,
 ): Promise<void> {
   if (!file) {
@@ -272,10 +271,7 @@ async function presentExplore(
         : step.section === "deepDive"
           ? "Deep Dive"
           : "Summary";
-    reveal(
-      label,
-      sectionText(file, step.section as "summary" | "keyPoints" | "deepDive"),
-    );
+    reveal(label, sectionText(file, step.section ?? ""));
   }
 
   reveal("Gotchas", sectionText(file, "misconceptions"));
@@ -355,7 +351,7 @@ async function runSession(
       console.log(
         chalk.dim(`  Prerequisites: ${concept.prerequisites.join(", ") || "none"}`),
       );
-      await presentExplore(rl, concept.title, file);
+      await presentExplore(rl, file);
     } else if (mode === "teach-back") {
       await presentTeachBack(rl, concept.title, file);
     } else {

@@ -158,11 +158,13 @@ export function loadConcept(filePath: string): ConceptFile {
  * displaying content to a learner: concept files nest `###` headings, tables,
  * and code blocks that do not survive being flattened into a list.
  */
-export function sectionText(
-  concept: ConceptFile,
-  field: keyof typeof SECTION_ALIASES,
-): string {
-  for (const heading of SECTION_ALIASES[field]) {
+export function sectionText(concept: ConceptFile, field: string): string {
+  // Callers pass section names produced by the mode modules, which are not
+  // typed against SECTION_ALIASES; an unrecognised name yields '' rather than
+  // throwing mid-session.
+  const aliases: readonly string[] =
+    SECTION_ALIASES[field as keyof typeof SECTION_ALIASES] ?? [];
+  for (const heading of aliases) {
     const text = concept.sections[heading];
     if (text) return text;
   }
